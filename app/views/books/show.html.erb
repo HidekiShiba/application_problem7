@@ -1,0 +1,48 @@
+<p id="notice"></p>
+<div class="container px-5 px-sm-0">
+  <div class="row">
+    <!--User info、New book開始-->
+    <%= render 'books/list', book: @book_new %>
+    <!--User info、New book終了-->
+    <!--Book detail開始-->
+    <div class="col-md-8 offset-md-1">
+      <h2>Book detail</h2>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td>
+              <%= attachment_image_tag @book.user, :profile_image, format: 'jpeg', fallback: "no_image.jpg", size: "60x60" %><br>
+              <%= link_to @book.user.name, user_path(@book.user) %>
+            </td>
+            <td><%= link_to @book.title, book_path(@book) %></td>
+            <td><%= @book.body %></td>
+            <td id="favorite-btn-<%= @book.id %>"><%= render "favorites/favorite-btn", book: @book %></td>
+            <td>
+              <% if @book.user == current_user %>
+              <a class="btn btn-sm btn-success" href="/books/<%= @book.id %>/edit">Edit</a>
+              <% end %>
+            </td>
+            <td>
+              <% if @book.user == current_user %>
+              <a data-confirm="本当に消しますか？" class="btn btn-sm btn-danger" rel="nofollow" data-method="delete" href="/books/<%= @book.id %>">Destroy</a>
+              <% end %>
+            </td>
+            <td>コメント数：<%= @book.book_comments.count %></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="comments">
+        <%= render "book_comments/index", book: @book %>
+      </div>
+      <div class="new-comment">
+          <%= form_with model:[@book, @book_comment], data: {remote: true} do |f| %>
+            <%= f.text_area :comment, cols:'90', id: "text" %>
+            <%= f.submit "送信する" %>
+          <% end %>
+      </div>
+    </div>
+    <!--Book detail終了-->
+  </div>
+</div>
+
+
