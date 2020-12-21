@@ -28,6 +28,7 @@ class User < ApplicationRecord
     following_user.include?(user)
   end
 
+  # 検索機能場合分け
   def self.looks(searches, words)
     if searches == "perfect_match"
       @user = User.where("name LIKE ?", "#{words}")
@@ -38,6 +39,18 @@ class User < ApplicationRecord
     else
       @user = User.where("name LIKE ?", "%#{words}")
     end
+  end
+
+  # 住所自動入力
+  include JpPrefecture
+  jp_prefecture :prefecture_code
+
+  def prefecture_name
+    JpPrefecture::Prefecture.find(code: prefecture_code).try(:name)
+  end
+
+  def prefecture_name=(prefecture_name)
+    self.prefecture_code = JpPrefecture::Prefecture.find(name: prefecture_name).code
   end
 
   attachment :profile_image
